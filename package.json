@@ -1,0 +1,19 @@
+{
+  "name": "text-game-engine-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt --write packages",
+    "format:check": "oxfmt packages",
+    "dev": "pnpm -r --parallel dev",
+    "validate": "pnpm lint && pnpm format:check && pnpm build && pnpm test"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.20.0",
+    "oxlint": "^1.0.0",
+    "typescript": "^5.7.0"
+  }
+}
