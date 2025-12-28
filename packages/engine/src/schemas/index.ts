@@ -1,4 +1,4 @@
-export { PathSchema, ScalarSchema, DirectionSchema } from "./primitives";
+export { PathSchema, ScalarSchema } from "./primitives";
 export { ConditionSchema, BaseConditionSchema } from "./conditions";
 export { EffectSchema } from "./effects";
 export {

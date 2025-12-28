@@ -4,7 +4,7 @@ import type {
   Room,
   Item,
   NPC,
-  Direction,
+  Exit,
   DescriptionFragment,
   Condition,
   Effect,
@@ -590,66 +590,59 @@ export class GameEngine {
     return `You don't see any "${target}" here.`;
   }
 
+  private findExit(input: string): Exit | undefined {
+    const room = this.getCurrentRoom();
+    const normalized = input.toLowerCase().trim();
+
+    const byAlias = room.exits.find((e) =>
+      e.aliases?.some((alias) => alias.toLowerCase() === normalized),
+    );
+    if (byAlias) return byAlias;
+
+    const targetRoom = this.definition.rooms.find(
+      (r) => r.id.toLowerCase() === normalized || r.name.toLowerCase() === normalized,
+    );
+    if (targetRoom) {
+      return room.exits.find((e) => e.targetRoomId === targetRoom.id);
+    }
+
+    return undefined;
+  }
+
+  private canUseExit(exit: Exit): { allowed: boolean; message?: string } {
+    if (exit.requires) {
+      const { pass } = this.conditionsPass(exit.requires);
+      if (!pass) {
+        const message = exit.blockedMessage ? this.renderText(exit.blockedMessage) : undefined;
+        return { allowed: false, message };
+      }
+    }
+
+    if (exit.locked && !(exit.requiredItem && this.hasItem(exit.requiredItem))) {
+      const message = exit.blockedMessage ? this.renderText(exit.blockedMessage) : undefined;
+      return { allowed: false, message };
+    }
+
+    return { allowed: true };
+  }
+
   go(direction: string): string {
     this.incrementTurn();
     if (this.state.gameOver) {
       return this.renderText(this.definition.winMessage);
     }
-    const room = this.getCurrentRoom();
-    const normalized = direction.toLowerCase().trim();
-    const dir = normalized as Direction;
-    let exit = room.exits.find((e) => e.direction === dir);
 
-    if (!exit) {
-      if (normalized === "inside" && room.name.toLowerCase() === "outside") {
-        exit = room.exits.find(() => true);
-      } else if (normalized === "outside" && room.name.toLowerCase() !== "outside") {
-        exit = room.exits.find((e) => {
-          const targetRoom = this.getRoomById(e.targetRoomId);
-          return targetRoom?.name.toLowerCase() === "outside";
-        });
-      }
-    }
-
-    if (!exit) {
-      const targetRoom = this.definition.rooms.find(
-        (candidate) =>
-          candidate.id.toLowerCase() === normalized || candidate.name.toLowerCase() === normalized,
-      );
-      if (targetRoom) {
-        exit = room.exits.find((e) => e.targetRoomId === targetRoom.id);
-      }
-    }
-
+    const exit = this.findExit(direction);
     if (!exit) {
       return `You can't go ${direction} from here.`;
     }
 
-    if (exit.requires) {
-      const { pass } = this.conditionsPass(exit.requires);
-      if (!pass) {
-        if (exit.blockedMessage) {
-          const rendered = this.renderText(exit.blockedMessage);
-          return rendered || `You can't go ${direction} right now.`;
-        }
-        return `You can't go ${direction} right now.`;
-      }
+    const { allowed, message } = this.canUseExit(exit);
+    if (!allowed) {
+      return message || `You can't go ${direction} right now.`;
     }
 
-    if (exit.locked) {
-      if (exit.requiredItem && this.hasItem(exit.requiredItem)) {
-        this.state.currentRoomId = exit.targetRoomId;
-      } else {
-        if (exit.blockedMessage) {
-          const rendered = this.renderText(exit.blockedMessage);
-          return rendered || `You can't go ${direction} right now.`;
-        }
-        return `You can't go ${direction} right now.`;
-      }
-    } else {
-      this.state.currentRoomId = exit.targetRoomId;
-    }
-
+    this.state.currentRoomId = exit.targetRoomId;
     if (!this.state.visitedRooms.includes(exit.targetRoomId)) {
       this.state.visitedRooms.push(exit.targetRoomId);
     }

@@ -16,7 +16,6 @@ export type {
   Condition,
   BaseCondition,
   Effect,
-  Direction,
   Scalar,
   Path,
   TextOrDescriptive,

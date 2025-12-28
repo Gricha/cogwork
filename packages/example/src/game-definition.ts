@@ -106,8 +106,8 @@ export const dungeonEscape: GameDefinition = {
       npcs: [],
       exits: [
         {
-          direction: "north",
           targetRoomId: "corridor",
+          aliases: ["north"],
           requires: [{ truthy: "CELL_UNLOCKED" }],
           blockedMessage: "The cell door is locked. You need to find a way to open it.",
         },
@@ -164,13 +164,10 @@ export const dungeonEscape: GameDefinition = {
       ],
       npcs: [],
       exits: [
+        { targetRoomId: "cell", aliases: ["south"] },
         {
-          direction: "south",
-          targetRoomId: "cell",
-        },
-        {
-          direction: "north",
           targetRoomId: "exit",
+          aliases: ["north"],
           requires: [
             {
               or: [{ truthy: "GUARD_GONE" }, { truthy: "GUARD_DISTRACTED" }],
@@ -263,12 +260,7 @@ export const dungeonEscape: GameDefinition = {
         },
       ],
       npcs: [],
-      exits: [
-        {
-          direction: "south",
-          targetRoomId: "corridor",
-        },
-      ],
+      exits: [{ targetRoomId: "corridor", aliases: ["south"] }],
     },
   ],
 

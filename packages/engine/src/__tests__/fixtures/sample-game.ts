@@ -83,8 +83,8 @@ export const sampleGame: GameDefinition = {
       npcs: [],
       exits: [
         {
-          direction: "north",
           targetRoomId: "treasure",
+          aliases: ["north"],
           requires: [{ truthy: "DOOR_UNLOCKED" }],
           blockedMessage: "The door is locked. You need to find a way to open it.",
         },
@@ -107,12 +107,7 @@ export const sampleGame: GameDefinition = {
         },
       ],
       npcs: [],
-      exits: [
-        {
-          direction: "south",
-          targetRoomId: "start",
-        },
-      ],
+      exits: [{ targetRoomId: "start", aliases: ["south"] }],
       triggers: [
         {
           id: "treasure-found",

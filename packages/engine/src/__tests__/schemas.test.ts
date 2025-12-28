@@ -52,7 +52,7 @@ describe("Zod Schemas", () => {
             description: "A room.",
             items: [],
             npcs: [],
-            exits: [{ direction: "north", targetRoomId: "nonexistent-room" }],
+            exits: [{ targetRoomId: "nonexistent-room" }],
           },
         ],
         startingRoom: "room1",
@@ -75,7 +75,6 @@ describe("Zod Schemas", () => {
             npcs: [],
             exits: [
               {
-                direction: "north",
                 targetRoomId: "room2",
                 requiredItem: "nonexistent-item",
               },

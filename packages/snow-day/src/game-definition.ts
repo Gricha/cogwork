@@ -411,8 +411,8 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       npcs: [],
       exits: [
         {
-          direction: "south",
           targetRoomId: "living-room",
+          aliases: ["south"],
           requires: [{ truthy: "flags.IS_SNOWING" }],
           blockedMessage:
             'Your parent calls from down the hall: "Not yet. You need to get ready for school." You glance back at the window, wondering what it might show.',
@@ -576,15 +576,15 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       npcs: [],
       exits: [
         {
-          direction: "west",
           targetRoomId: "living-room",
+          aliases: ["west"],
           requires: [{ truthy: "flags.IS_SNOWING" }],
           blockedMessage:
             "The living room feels just out of reach until you know what's really happening outside.",
         },
         {
-          direction: "east",
           targetRoomId: "outside",
+          aliases: ["east"],
           requires: [
             { truthy: "flags.SCHOOL_CLOSED" },
             { truthy: "flags.GEAR_READY" },
@@ -615,7 +615,7 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
             ],
           },
         },
-        { direction: "north", targetRoomId: "bedroom" },
+        { targetRoomId: "bedroom", aliases: ["north"] },
       ],
     },
     {
@@ -862,9 +862,9 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       ],
       npcs: [],
       exits: [
-        { direction: "north", targetRoomId: "bedroom" },
-        { direction: "east", targetRoomId: "entry" },
-        { direction: "west", targetRoomId: "kitchen" },
+        { targetRoomId: "bedroom", aliases: ["north"] },
+        { targetRoomId: "entry", aliases: ["east"] },
+        { targetRoomId: "kitchen", aliases: ["west"] },
       ],
     },
     {
@@ -1012,7 +1012,7 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           aliases: ["mom", "dad"],
         },
       ],
-      exits: [{ direction: "east", targetRoomId: "living-room" }],
+      exits: [{ targetRoomId: "living-room", aliases: ["east"] }],
     },
     {
       id: "outside",
@@ -1175,7 +1175,7 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           ],
         },
       ],
-      exits: [{ direction: "west", targetRoomId: "entry" }],
+      exits: [{ targetRoomId: "entry", aliases: ["west", "inside"] }],
     },
   ],
 

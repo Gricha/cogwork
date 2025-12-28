@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ScalarSchema, DirectionSchema } from "./primitives";
+import { ScalarSchema } from "./primitives";
 import { ConditionSchema } from "./conditions";
 import { EffectSchema } from "./effects";
 
@@ -66,8 +66,8 @@ export const NPCSchema = z.object({
 });
 
 export const ExitSchema = z.object({
-  direction: DirectionSchema,
   targetRoomId: z.string(),
+  aliases: z.array(z.string()).optional(),
   locked: z.boolean().optional(),
   requiredItem: z.string().optional(),
   description: z.string().optional(),

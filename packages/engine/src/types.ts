@@ -1,4 +1,3 @@
-export type Direction = "north" | "south" | "east" | "west" | "up" | "down";
 export type Scalar = string | number | boolean;
 
 export type BuiltinPath = "room" | "room.id" | "won" | "gameOver" | "turnCount";
@@ -92,8 +91,8 @@ export interface NPC {
 }
 
 export interface Exit {
-  direction: Direction;
   targetRoomId: string;
+  aliases?: string[];
   locked?: boolean;
   requiredItem?: string;
   description?: string;
