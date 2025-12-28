@@ -40,7 +40,6 @@ export interface DescriptionFragment {
   when?: Condition[];
   priority?: number;
   group?: string;
-  effects?: Effect[];
 }
 
 export interface DescriptiveText {

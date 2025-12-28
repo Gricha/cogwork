@@ -16,7 +16,6 @@ import type {
 import { GameDefinitionSchema } from "./schemas/index";
 
 type ConditionResult = { pass: boolean; onceMarks: string[] };
-type RenderedText = { text: string; effects: Effect[] | undefined };
 
 export interface GameEngineOptions {
   skipValidation?: boolean;
@@ -436,7 +435,7 @@ export class GameEngine {
     }
   }
 
-  private renderFragments(fragments: DescriptionFragment[]): RenderedText {
+  private renderFragments(fragments: DescriptionFragment[]): string {
     const passing: Array<{ fragment: DescriptionFragment; onceMarks: string[] }> = [];
     for (const fragment of fragments) {
       const { pass, onceMarks } = this.conditionsPass(fragment.when);
@@ -444,13 +443,12 @@ export class GameEngine {
       passing.push({ fragment, onceMarks });
     }
 
-    if (passing.length === 0) return { text: "", effects: [] };
+    if (passing.length === 0) return "";
 
     const maxPriority = Math.max(...passing.map((entry) => entry.fragment.priority ?? 0));
 
     const usedGroups = new Set<string>();
     const lines: string[] = [];
-    const effects: Effect[] = [];
 
     for (const entry of passing) {
       const fragment = entry.fragment;
@@ -463,19 +461,14 @@ export class GameEngine {
 
       lines.push(fragment.say);
       entry.onceMarks.forEach((path) => this.markOnce(path));
-      if (fragment.effects) {
-        effects.push(...fragment.effects);
-      }
     }
 
-    return { text: lines.join("\n\n"), effects };
+    return lines.join("\n\n");
   }
 
   private renderText(text: TextOrDescriptive): string {
     if (typeof text === "string") return this.interpolateText(text);
-    const rendered = this.renderFragments(text.fragments);
-    this.applyEffects(rendered.effects);
-    return this.interpolateText(rendered.text);
+    return this.interpolateText(this.renderFragments(text.fragments));
   }
 
   private interpolateText(text: string): string {

@@ -26,8 +26,15 @@ pnpm format            # Auto-format code
 
 1. **Declarative over imperative** - Game logic lives in GameDefinition objects, not code
 2. **Validate early** - Zod schemas catch errors at startup, not runtime
-3. **Test thoroughly** - Every game package has comprehensive tests
-4. **Keep it simple** - Minimal dependencies, no over-engineering
+3. **Keep it simple** - Minimal dependencies, no over-engineering
+
+## Testing
+
+- Add tests for new functionality where it makes sense
+- Never remove tests just because they fail - fix the code or update the test if requirements changed
+- Only remove tests when the functionality they test was explicitly removed
+- Write meaningful tests that verify actual behavior, not implementation details
+- Coverage percentage is a bad metric - don't chase it. A test that exercises real edge cases beats ten superficial tests
 
 ## Before Committing
 

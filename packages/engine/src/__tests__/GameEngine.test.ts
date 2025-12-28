@@ -1,14 +1,16 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { GameEngine } from "../GameEngine";
-import { sampleGame, conditionTestGame } from "./fixtures/sample-game";
+import {
+  sampleGame,
+  conditionTestGame,
+  npcTestGame,
+  containerTestGame,
+  priorityTestGame,
+  effectsTestGame,
+} from "./fixtures/sample-game";
 
 describe("GameEngine", () => {
   describe("initialization", () => {
-    it("should create engine with valid game definition", () => {
-      const engine = new GameEngine(sampleGame);
-      expect(engine).toBeInstanceOf(GameEngine);
-    });
-
     it("should throw on invalid game definition", () => {
       expect(() => {
         new GameEngine({} as any);
@@ -23,11 +25,6 @@ describe("GameEngine", () => {
       expect(() => {
         new GameEngine(invalidGame, { skipValidation: true });
       }).toThrow('Starting room "nonexistent" not found');
-    });
-
-    it("should allow skipping validation", () => {
-      const engine = new GameEngine(sampleGame, { skipValidation: true });
-      expect(engine).toBeInstanceOf(GameEngine);
     });
   });
 

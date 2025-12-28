@@ -8,7 +8,6 @@ export const DescriptionFragmentSchema = z.object({
   when: z.array(ConditionSchema).optional(),
   priority: z.number().optional(),
   group: z.string().optional(),
-  effects: z.array(EffectSchema).optional(),
 });
 
 export const DescriptiveTextSchema = z.object({
