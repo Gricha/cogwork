@@ -18,7 +18,7 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
-  packages/engine:
+  packages/cogwork:
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -36,11 +36,11 @@ importers:
         specifier: ^3.24.0
         version: 3.25.76
 
-  packages/example:
+  packages/examples/dungeon-escape:
     dependencies:
       cogwork:
         specifier: workspace:*
-        version: link:../engine
+        version: link:../../cogwork
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -58,11 +58,11 @@ importers:
         specifier: ^3.24.0
         version: 3.25.76
 
-  packages/snow-day:
+  packages/examples/snow-day:
     dependencies:
       cogwork:
         specifier: workspace:*
-        version: link:../engine
+        version: link:../../cogwork
     devDependencies:
       '@types/node':
         specifier: ^22.0.0

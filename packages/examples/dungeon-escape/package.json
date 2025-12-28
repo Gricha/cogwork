@@ -1,8 +1,8 @@
 {
-  "name": "@cogwork/example",
+  "name": "@cogwork/dungeon-escape",
   "version": "1.0.0",
   "private": true,
-  "description": "Example puzzle adventure game using cogwork",
+  "description": "Dungeon Escape - example puzzle adventure game using cogwork",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {

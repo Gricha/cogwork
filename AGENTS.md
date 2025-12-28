@@ -8,9 +8,10 @@ A pnpm monorepo containing `cogwork`, a declarative engine for puzzle adventure 
 
 ```
 packages/
-  engine/     # Core engine + Zod schemas
-  example/    # Minimal example game
-  snow-day/   # Full-featured example game
+  cogwork/              # Core engine + Zod schemas
+  examples/
+    dungeon-escape/     # Minimal example game
+    snow-day/           # Full-featured example game
 ```
 
 ## Commands
