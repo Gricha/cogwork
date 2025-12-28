@@ -1,12 +1,12 @@
 {
-  "name": "snow-day-game",
+  "name": "@cogwork/snow-day",
   "version": "1.0.0",
-  "description": "Snow Day - A text adventure game built with text-game-engine",
+  "description": "Snow Day - A puzzle adventure game built with cogwork",
   "keywords": [
     "game",
     "snow-day",
     "text-adventure",
-    "text-game-engine"
+    "cogwork"
   ],
   "license": "MIT",
   "type": "module",
@@ -29,7 +29,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "text-game-engine": "workspace:*"
+    "cogwork": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

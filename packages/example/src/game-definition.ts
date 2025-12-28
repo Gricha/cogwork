@@ -1,4 +1,4 @@
-import type { GameDefinition } from "text-game-engine";
+import type { GameDefinition } from "cogwork";
 
 export const dungeonEscape: GameDefinition = {
   id: "dungeon-escape",

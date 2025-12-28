@@ -1,11 +1,13 @@
 {
-  "name": "text-game-engine",
+  "name": "cogwork",
   "version": "1.0.0",
-  "description": "A declarative text adventure game engine with Zod validation",
+  "description": "A declarative puzzle adventure game engine with Zod validation",
   "keywords": [
     "game-engine",
     "interactive-fiction",
     "text-adventure",
+    "puzzle",
+    "escape-room",
     "typescript",
     "zod"
   ],

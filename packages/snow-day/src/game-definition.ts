@@ -1,4 +1,4 @@
-import type { GameDefinition } from "text-game-engine";
+import type { GameDefinition } from "cogwork";
 
 /**
  * Snow Day - A text-based holiday adventure game

@@ -1,8 +1,8 @@
 {
-  "name": "example-game",
+  "name": "@cogwork/example",
   "version": "1.0.0",
   "private": true,
-  "description": "Example text adventure game using text-game-engine",
+  "description": "Example puzzle adventure game using cogwork",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "text-game-engine": "workspace:*"
+    "cogwork": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

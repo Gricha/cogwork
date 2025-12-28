@@ -1,5 +1,5 @@
 import * as readline from "node:readline";
-import { GameEngine } from "text-game-engine";
+import { GameEngine } from "cogwork";
 import { snowDay } from "./game-definition";
 
 const engine = new GameEngine(snowDay);

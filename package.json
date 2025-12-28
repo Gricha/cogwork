@@ -1,5 +1,5 @@
 {
-  "name": "text-game-engine-monorepo",
+  "name": "cogwork-monorepo",
   "private": true,
   "scripts": {
     "build": "pnpm -r build",

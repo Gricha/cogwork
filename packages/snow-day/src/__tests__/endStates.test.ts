@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { GameEngine } from "text-game-engine";
+import { GameEngine } from "cogwork";
 import { snowDay } from "../game-definition";
 
 describe("Game State", () => {
