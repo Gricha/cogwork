@@ -132,7 +132,6 @@ export class GameEngine {
 
   private getAvailableDialogue(npc: NPC): NPC["dialogue"] {
     return npc.dialogue.filter((line) => {
-      if (line.condition && !this.getFlag(line.condition)) return false;
       const { pass } = this.conditionsPass(line.when);
       return pass;
     });
@@ -762,22 +761,8 @@ export class GameEngine {
 
     let response = `You: "${option.playerLine}"\n\n${this.renderText(option.response)}`;
 
-    if (option.setsFlag) {
-      this.setFlag(option.setsFlag, true);
-    }
-
     if (option.effects) {
       this.applyEffects(option.effects);
-    }
-
-    if (option.givesItem) {
-      const room = this.getCurrentRoom();
-      const itemToGive = room.items.find((item) => item.id === option.givesItem);
-      if (itemToGive) {
-        this.state.takenItemIds.push(itemToGive.id);
-        this.state.inventoryIds.push(itemToGive.id);
-        response += `\n\n[You received: ${itemToGive.name}]`;
-      }
     }
 
     if (this.state.won) {

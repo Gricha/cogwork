@@ -30,6 +30,137 @@ describe("Zod Schemas", () => {
       });
       expect(result.success).toBe(false);
     });
+
+    it("should reject invalid startingRoom reference", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        startingRoom: "nonexistent-room",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("nonexistent-room");
+      }
+    });
+
+    it("should reject invalid exit targetRoomId reference", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [],
+            npcs: [],
+            exits: [{ direction: "north", targetRoomId: "nonexistent-room" }],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("nonexistent-room");
+      }
+    });
+
+    it("should reject invalid exit requiredItem reference", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [],
+            npcs: [],
+            exits: [
+              {
+                direction: "north",
+                targetRoomId: "room2",
+                requiredItem: "nonexistent-item",
+              },
+            ],
+          },
+          {
+            id: "room2",
+            name: "Room Two",
+            description: "Another room.",
+            items: [],
+            npcs: [],
+            exits: [],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("nonexistent-item");
+      }
+    });
+
+    it("should reject invalid item location reference", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [
+              {
+                id: "key",
+                name: "key",
+                description: "A key.",
+                examineText: "A brass key.",
+                takeable: true,
+                location: "nonexistent-container",
+              },
+            ],
+            npcs: [],
+            exits: [],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("nonexistent-container");
+      }
+    });
+
+    it("should allow item location referencing another item", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [
+              {
+                id: "drawer",
+                name: "drawer",
+                description: "A drawer.",
+                examineText: "A wooden drawer.",
+                takeable: false,
+              },
+              {
+                id: "key",
+                name: "key",
+                description: "A key.",
+                examineText: "A brass key.",
+                takeable: true,
+                location: "drawer",
+              },
+            ],
+            npcs: [],
+            exits: [],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(true);
+    });
   });
 
   describe("ConditionSchema", () => {

@@ -51,12 +51,9 @@ export const ItemSchema = z.object({
 });
 
 export const DialogueLineSchema = z.object({
-  condition: z.string().optional(),
   when: z.array(ConditionSchema).optional(),
   playerLine: z.string(),
   response: TextOrDescriptiveSchema,
-  setsFlag: z.string().optional(),
-  givesItem: z.string().optional(),
   effects: z.array(EffectSchema).optional(),
 });
 
@@ -96,7 +93,7 @@ export const HintSchema = z.object({
   when: z.array(ConditionSchema).optional(),
 });
 
-export const GameDefinitionSchema = z.object({
+const GameDefinitionBaseSchema = z.object({
   id: z.string(),
   name: z.string(),
   version: z.string(),
@@ -111,6 +108,47 @@ export const GameDefinitionSchema = z.object({
   hints: z.array(HintSchema),
 
   globalTriggers: z.array(TriggerSchema).optional(),
+});
+
+export const GameDefinitionSchema = GameDefinitionBaseSchema.superRefine((data, ctx) => {
+  const roomIds = new Set(data.rooms.map((r) => r.id));
+  const allItemIds = new Set(data.rooms.flatMap((r) => r.items.map((i) => i.id)));
+
+  if (!roomIds.has(data.startingRoom)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `startingRoom "${data.startingRoom}" does not exist`,
+      path: ["startingRoom"],
+    });
+  }
+
+  for (const [roomIdx, room] of data.rooms.entries()) {
+    for (const [exitIdx, exit] of room.exits.entries()) {
+      if (!roomIds.has(exit.targetRoomId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `exit targetRoomId "${exit.targetRoomId}" does not exist`,
+          path: ["rooms", roomIdx, "exits", exitIdx, "targetRoomId"],
+        });
+      }
+      if (exit.requiredItem && !allItemIds.has(exit.requiredItem)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `exit requiredItem "${exit.requiredItem}" does not exist`,
+          path: ["rooms", roomIdx, "exits", exitIdx, "requiredItem"],
+        });
+      }
+    }
+    for (const [itemIdx, item] of room.items.entries()) {
+      if (item.location && !roomIds.has(item.location) && !allItemIds.has(item.location)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `item location "${item.location}" does not exist`,
+          path: ["rooms", roomIdx, "items", itemIdx, "location"],
+        });
+      }
+    }
+  }
 });
 
 export const GameStateSchema = z.object({

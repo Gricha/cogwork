@@ -1,6 +1,9 @@
 export type Direction = "north" | "south" | "east" | "west" | "up" | "down";
-export type Path = string;
 export type Scalar = string | number | boolean;
+
+export type BuiltinPath = "room" | "room.id" | "won" | "gameOver" | "turnCount";
+export type FlagPath = `flags.${string}`;
+export type Path = BuiltinPath | FlagPath | string;
 
 export type BaseCondition =
   | { eq: [Path, Scalar] }
@@ -74,12 +77,9 @@ export interface Item {
 }
 
 export interface DialogueLine {
-  condition?: string;
   when?: Condition[];
   playerLine: string;
   response: TextOrDescriptive;
-  setsFlag?: string;
-  givesItem?: string;
   effects?: Effect[];
 }
 
