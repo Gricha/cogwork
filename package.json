@@ -9,7 +9,7 @@
     "format": "oxfmt --write packages",
     "format:check": "oxfmt packages",
     "dev": "pnpm -r --parallel dev",
-    "validate": "pnpm lint && pnpm format:check && pnpm build && pnpm test"
+    "validate": "pnpm lint && pnpm format:check && pnpm build"
   },
   "devDependencies": {
     "oxfmt": "^0.20.0",

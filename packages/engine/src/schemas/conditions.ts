@@ -2,7 +2,6 @@ import { z } from "zod";
 import { PathSchema, ScalarSchema } from "./primitives";
 import type { Condition } from "../types";
 
-// Base conditions (non-recursive)
 const BaseConditionSchema = z.union([
   z.object({ eq: z.tuple([PathSchema, ScalarSchema]) }).strict(),
   z.object({ ne: z.tuple([PathSchema, ScalarSchema]) }).strict(),
@@ -20,8 +19,6 @@ const BaseConditionSchema = z.union([
   z.object({ is_at: z.tuple([PathSchema, PathSchema]) }).strict(),
 ]);
 
-// Recursive condition type with combinators
-// Using z.lazy for recursive definition
 export const ConditionSchema: z.ZodType<Condition> = z.lazy(() =>
   z.union([
     BaseConditionSchema,

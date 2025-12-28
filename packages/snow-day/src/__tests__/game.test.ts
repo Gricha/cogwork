@@ -5,9 +5,9 @@ import { snowDay } from "../game-definition";
 describe("GameEngine - Core Loop", () => {
   let engine: GameEngine;
   const reachLivingRoom = () => {
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.use("window");
-    engine.go("south"); // living room
+    engine.go("south");
   };
 
   beforeEach(() => {
@@ -86,7 +86,7 @@ describe("GameEngine - Core Loop", () => {
       const afterBatteries = engine.hint();
       expect(afterBatteries).toContain("remote");
 
-      engine.go("south"); // living room
+      engine.go("south");
       engine.take("remote");
       engine.use("batteries", "remote");
       const afterRemote = engine.hint();
@@ -376,38 +376,38 @@ describe("GameEngine - Core Loop", () => {
       engine.use("batteries", "remote");
       engine.use("remote", "TV", 42);
 
-      engine.go("west"); // kitchen
+      engine.go("west");
       engine.take("carrot");
 
-      engine.go("east"); // living room
-      engine.go("north"); // bedroom
+      engine.go("east");
+      engine.go("north");
       engine.take("scarf");
       engine.use("scarf");
       engine.take("winter coat");
-      engine.go("south"); // living room
+      engine.go("south");
       engine.use("winter coat");
-      engine.go("east"); // entry
+      engine.go("east");
       engine.take("beanie");
       engine.use("beanie");
-      engine.go("west"); // living room
-      engine.go("east"); // entry
+      engine.go("west");
+      engine.go("east");
       engine.take("mittens");
-      engine.go("west"); // living room
+      engine.go("west");
       engine.use("mittens", "mantle");
       engine.use("mittens");
 
-      engine.go("east"); // entry
-      engine.go("east"); // outside
+      engine.go("east");
+      engine.go("east");
       const blocked = engine.go("east");
       expect(blocked).toContain("breakfast");
 
-      engine.go("west"); // entry
-      engine.go("west"); // living room
-      engine.go("west"); // kitchen
+      engine.go("west");
+      engine.go("west");
+      engine.go("west");
       engine.use("breakfast");
-      engine.go("east"); // living room
-      engine.go("east"); // entry
-      engine.go("east"); // outside
+      engine.go("east");
+      engine.go("east");
+      engine.go("east");
       engine.use("snowman");
       const result = engine.use("carrot", "snowman");
       expect(result).toContain("snowman");
@@ -422,7 +422,7 @@ describe("GameEngine - Core Loop", () => {
 
     it("should wear the beanie", () => {
       reachLivingRoom();
-      engine.go("east"); // entry
+      engine.go("east");
       engine.take("beanie");
 
       const wearResult = engine.use("beanie");

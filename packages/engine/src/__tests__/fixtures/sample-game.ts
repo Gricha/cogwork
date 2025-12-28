@@ -1,13 +1,5 @@
 import type { GameDefinition } from "../../types";
 
-/**
- * A simple test game with 2 rooms to test engine features:
- * - Basic room navigation
- * - Item pickup and use
- * - Conditions (including AND/OR/NOT)
- * - Global triggers (derived flags)
- * - Win condition
- */
 export const sampleGame: GameDefinition = {
   id: "test-game",
   name: "Test Adventure",
@@ -53,7 +45,6 @@ export const sampleGame: GameDefinition = {
           takeable: true,
           useActions: [
             {
-              // Use torch on door (requires key in inventory)
               targetId: "door",
               requires: [{ has: "key" }],
               response: "You light the torch and see the keyhole clearly.",
@@ -82,7 +73,6 @@ export const sampleGame: GameDefinition = {
           aliases: ["door"],
           useActions: [
             {
-              // Use key on door - unlocks it
               targetId: "key",
               response: "You insert the key and turn it. The door unlocks with a click!",
               effects: [{ set: ["DOOR_UNLOCKED", true] }],
@@ -159,7 +149,6 @@ export const sampleGame: GameDefinition = {
     },
   ],
 
-  // Global trigger: when both key and torch are in inventory, set PREPARED flag
   globalTriggers: [
     {
       id: "prepared-check",
@@ -173,9 +162,6 @@ export const sampleGame: GameDefinition = {
   ],
 };
 
-/**
- * Game specifically for testing condition combinators
- */
 export const conditionTestGame: GameDefinition = {
   id: "condition-test",
   name: "Condition Test Game",
@@ -188,7 +174,6 @@ export const conditionTestGame: GameDefinition = {
       description: {
         id: "test-desc",
         fragments: [
-          // Test OR condition
           {
             say: "You have either item A or item B.",
             when: [{ or: [{ has: "item-a" }, { has: "item-b" }] }],
@@ -203,7 +188,6 @@ export const conditionTestGame: GameDefinition = {
             ],
             group: "or-test",
           },
-          // Test AND condition
           {
             say: "You have both items!",
             when: [
@@ -212,7 +196,6 @@ export const conditionTestGame: GameDefinition = {
               },
             ],
           },
-          // Test NOT condition
           {
             say: "Flag X is not set.",
             when: [{ not: { truthy: "FLAG_X" } }],
@@ -223,7 +206,6 @@ export const conditionTestGame: GameDefinition = {
             when: [{ truthy: "FLAG_X" }],
             group: "not-test",
           },
-          // Test turnCount condition
           {
             say: "More than 5 turns have passed.",
             when: [{ gt: ["turnCount", 5] }],

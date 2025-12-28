@@ -123,6 +123,5 @@ function prompt(): void {
   });
 }
 
-// Start the game
 console.log("\n" + engine.startGame());
 prompt();

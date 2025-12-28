@@ -19,7 +19,6 @@ describe("Zod Schemas", () => {
       const result = GameDefinitionSchema.safeParse({
         id: "test",
         name: "Test",
-        // missing version, rooms, etc.
       });
       expect(result.success).toBe(false);
     });

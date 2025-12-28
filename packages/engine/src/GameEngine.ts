@@ -19,7 +19,6 @@ type ConditionResult = { pass: boolean; onceMarks: string[] };
 type RenderedText = { text: string; effects: Effect[] | undefined };
 
 export interface GameEngineOptions {
-  /** Skip Zod validation for performance (use when definition is already validated) */
   skipValidation?: boolean;
 }
 
@@ -28,7 +27,6 @@ export class GameEngine {
   private state: GameState;
 
   constructor(definition: GameDefinition, options: GameEngineOptions = {}) {
-    // Validate definition with Zod unless skipped
     if (!options.skipValidation) {
       const result = GameDefinitionSchema.safeParse(definition);
       if (!result.success) {
@@ -39,7 +37,6 @@ export class GameEngine {
       this.definition = definition;
     }
 
-    // Validate startingRoom exists
     if (!this.definition.rooms.find((r) => r.id === this.definition.startingRoom)) {
       throw new Error(`Starting room "${this.definition.startingRoom}" not found in rooms`);
     }
@@ -60,10 +57,6 @@ export class GameEngine {
       once: [],
     };
   }
-
-  // =========================================================================
-  // Room/Item/NPC Lookup
-  // =========================================================================
 
   private getRoomById(id: string): Room | undefined {
     return this.definition.rooms.find((room) => room.id === id);
@@ -162,10 +155,6 @@ export class GameEngine {
     );
   }
 
-  // =========================================================================
-  // State Management
-  // =========================================================================
-
   private incrementTurn(): void {
     if (this.state.gameOver) return;
     this.state.turnCount++;
@@ -196,10 +185,6 @@ export class GameEngine {
       this.state.once.push(path);
     }
   }
-
-  // =========================================================================
-  // Path Value Resolution
-  // =========================================================================
 
   private getPathValue(path: string): Scalar | undefined {
     if (path === "room" || path === "room.id") {
@@ -248,12 +233,7 @@ export class GameEngine {
     this.setFlag(path, value);
   }
 
-  // =========================================================================
-  // Condition Evaluation (with AND/OR/NOT support)
-  // =========================================================================
-
   private evaluateCondition(condition: Condition): ConditionResult {
-    // Handle combinators first
     if ("and" in condition) {
       return this.evaluateAnd(condition.and);
     }
@@ -266,7 +246,6 @@ export class GameEngine {
       return this.evaluateNot(condition.not);
     }
 
-    // Handle base conditions
     if ("once" in condition) {
       const seen = this.hasOnce(condition.once);
       return { pass: !seen, onceMarks: seen ? [] : [condition.once] };
@@ -352,7 +331,6 @@ export class GameEngine {
     for (const condition of conditions) {
       const result = this.evaluateCondition(condition);
       if (result.pass) {
-        // Only return onceMarks from the branch that passed
         return { pass: true, onceMarks: result.onceMarks };
       }
     }
@@ -362,7 +340,6 @@ export class GameEngine {
 
   private evaluateNot(condition: Condition): ConditionResult {
     const result = this.evaluateCondition(condition);
-    // Note: onceMarks from negated conditions are not applied
     return { pass: !result.pass, onceMarks: [] };
   }
 
@@ -397,10 +374,6 @@ export class GameEngine {
 
     return { pass: true, onceMarks };
   }
-
-  // =========================================================================
-  // Effects Application (with add/subtract support)
-  // =========================================================================
 
   private applyEffects(effects?: Effect[]): void {
     if (!effects) return;
@@ -446,13 +419,8 @@ export class GameEngine {
       }
     }
 
-    // Process global triggers after any state change
     this.processGlobalTriggers();
   }
-
-  // =========================================================================
-  // Global Triggers (replaces updateDerivedFlags)
-  // =========================================================================
 
   private processGlobalTriggers(): void {
     if (!this.definition.globalTriggers) return;
@@ -461,12 +429,10 @@ export class GameEngine {
       const { pass, onceMarks } = this.conditionsPass(trigger.when);
       if (!pass) continue;
 
-      // Mark once conditions
       for (const mark of onceMarks) {
         this.markOnce(mark);
       }
 
-      // Apply effects (but don't recurse into global triggers again)
       if (trigger.effects) {
         for (const effect of trigger.effects) {
           if ("set" in effect) {
@@ -515,10 +481,6 @@ export class GameEngine {
     }
   }
 
-  // =========================================================================
-  // Text Rendering
-  // =========================================================================
-
   private renderFragments(fragments: DescriptionFragment[]): RenderedText {
     const passing: Array<{ fragment: DescriptionFragment; onceMarks: string[] }> = [];
     for (const fragment of fragments) {
@@ -565,10 +527,6 @@ export class GameEngine {
     return text.replaceAll("{turns}", String(this.state.turnCount));
   }
 
-  // =========================================================================
-  // Hints
-  // =========================================================================
-
   private getHintText(): string | null {
     for (const hint of this.definition.hints) {
       const { pass } = this.conditionsPass(hint.when);
@@ -577,10 +535,6 @@ export class GameEngine {
     }
     return null;
   }
-
-  // =========================================================================
-  // Use Action Matching
-  // =========================================================================
 
   private findUseAction(
     item: Item,
@@ -609,10 +563,6 @@ export class GameEngine {
 
     return null;
   }
-
-  // =========================================================================
-  // Room Description
-  // =========================================================================
 
   private describeCurrentRoom(): string {
     const room = this.getCurrentRoom();
@@ -653,10 +603,6 @@ export class GameEngine {
 
     return output;
   }
-
-  // =========================================================================
-  // Public API
-  // =========================================================================
 
   startGame(): string {
     this.state = this.getInitialState();
@@ -784,7 +730,6 @@ export class GameEngine {
     if (item.onTake) {
       this.applyEffects(item.onTake);
     } else {
-      // Always process global triggers after state changes
       this.processGlobalTriggers();
     }
 
@@ -1001,10 +946,6 @@ export class GameEngine {
     return this.state.won;
   }
 
-  // =========================================================================
-  // Serialization
-  // =========================================================================
-
   serialize(): string {
     return JSON.stringify(this.state);
   }
@@ -1030,7 +971,6 @@ export class GameEngine {
     return engine;
   }
 
-  /** Factory method that validates the definition */
   static create(definition: unknown): GameEngine {
     const validated = GameDefinitionSchema.parse(definition);
     return new GameEngine(validated as GameDefinition, { skipValidation: true });

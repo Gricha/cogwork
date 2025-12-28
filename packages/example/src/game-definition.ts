@@ -1,13 +1,5 @@
 import type { GameDefinition } from "text-game-engine";
 
-/**
- * A simple dungeon escape game demonstrating the engine features:
- * - Multiple rooms with conditional descriptions
- * - Items with use actions
- * - Global triggers for derived state
- * - AND/OR/NOT conditions
- * - Win condition
- */
 export const dungeonEscape: GameDefinition = {
   id: "dungeon-escape",
   name: "Dungeon Escape",
@@ -339,7 +331,6 @@ Good luck!
   ],
 
   globalTriggers: [
-    // Example: Track total items collected
     {
       id: "escape-ready",
       when: [

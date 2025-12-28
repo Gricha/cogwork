@@ -1,4 +1,3 @@
-// Re-export all schemas
 export { PathSchema, ScalarSchema, DirectionSchema } from "./primitives";
 export { ConditionSchema, BaseConditionSchema } from "./conditions";
 export { EffectSchema } from "./effects";

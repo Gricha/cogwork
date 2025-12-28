@@ -18,10 +18,10 @@ describe("Game State", () => {
 
   it("should track visited rooms", () => {
     engine.startGame();
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.use("window");
-    engine.go("south"); // living room
-    engine.go("east"); // entry
+    engine.go("south");
+    engine.go("east");
 
     const serialized = JSON.parse(engine.serialize());
     expect(serialized.visitedRooms).toContain("bedroom");
@@ -44,10 +44,10 @@ describe("Game State", () => {
 
   it("should update bucket state", () => {
     engine.startGame();
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.use("window");
-    engine.go("south"); // living room
-    engine.go("east"); // entry
+    engine.go("south");
+    engine.go("east");
 
     const before = engine.look();
     expect(before).toContain("overflowing");

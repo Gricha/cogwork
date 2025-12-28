@@ -254,7 +254,6 @@ describe("GameEngine", () => {
       const engine = new GameEngine(sampleGame);
       engine.startGame();
 
-      // Take both key and torch to trigger PREPARED flag
       engine.take("key");
       engine.take("torch");
 
@@ -266,7 +265,6 @@ describe("GameEngine", () => {
       const engine = new GameEngine(sampleGame);
       engine.startGame();
 
-      // Only take key
       engine.take("key");
 
       const status = engine.getStatus() as { flags: Record<string, boolean> };
@@ -334,7 +332,6 @@ describe("Condition Combinators", () => {
 
   describe("turnCount conditions", () => {
     it("should track turn count", () => {
-      // Do 6 actions to get past 5 turns
       engine.look();
       engine.look();
       engine.look();

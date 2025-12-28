@@ -1,7 +1,5 @@
-// Main engine class
 export { GameEngine, type GameEngineOptions } from "./GameEngine";
 
-// Types
 export type {
   GameDefinition,
   GameState,
@@ -24,5 +22,4 @@ export type {
   TextOrDescriptive,
 } from "./types";
 
-// Re-export schemas for consumers who want to validate
 export * from "./schemas/index";

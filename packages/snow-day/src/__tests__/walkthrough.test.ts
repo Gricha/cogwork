@@ -13,23 +13,19 @@ describe("Snow Day Walkthrough", () => {
     const intro = engine.startGame();
     expect(intro).toContain("Bedroom");
 
-    // Go to bedroom and confirm snow
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.use("window");
 
-    // Grab the Z-Boy for batteries
     engine.take("Z-Boy");
 
-    // Power the remote and turn on the TV
-    engine.go("south"); // living room
+    engine.go("south");
     engine.take("remote");
     engine.use("Z-Boy");
     engine.use("batteries", "remote");
     const tvResult = engine.use("remote", "TV", 42);
     expect(tvResult).toContain("Channel 42");
 
-    // Exit should still be blocked without gear
-    engine.go("east"); // entry
+    engine.go("east");
     const blocked = engine.go("east");
     expect(blocked).toContain("aren't quite ready");
   });
@@ -37,45 +33,40 @@ describe("Snow Day Walkthrough", () => {
   it("should build the snowman with the required items", () => {
     engine.startGame();
 
-    // Confirm snow day and power TV
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.use("window");
     engine.take("Z-Boy");
-    engine.go("south"); // living room
+    engine.go("south");
     engine.take("remote");
     engine.use("Z-Boy");
     engine.use("batteries", "remote");
     engine.use("remote", "TV", 42);
 
-    // Eat breakfast and take carrot
-    engine.go("west"); // kitchen
+    engine.go("west");
     engine.use("breakfast");
     engine.take("carrot");
 
-    // Take coal
-    engine.go("east"); // living room
+    engine.go("east");
     engine.take("coal");
 
-    // Dry and wear gear
-    engine.go("north"); // bedroom
+    engine.go("north");
     engine.take("scarf");
     engine.use("scarf");
     engine.take("winter coat");
     engine.use("winter coat");
-    engine.go("south"); // living room
-    engine.go("east"); // entry
+    engine.go("south");
+    engine.go("east");
     engine.take("beanie");
     engine.use("beanie");
-    engine.go("west"); // living room
-    engine.go("east"); // entry
+    engine.go("west");
+    engine.go("east");
     engine.take("mittens");
-    engine.go("west"); // living room
+    engine.go("west");
     engine.use("mittens", "mantle");
     engine.use("mittens");
 
-    engine.go("east"); // entry
+    engine.go("east");
 
-    // Get bucket and empty it
     engine.take("bucket");
     engine.use("bucket");
 
@@ -86,8 +77,7 @@ describe("Snow Day Walkthrough", () => {
     expect(gearStatus.flags.GEAR_SCARF).toBe(true);
     expect(gearStatus.flags.GEAR_OUTSIDE_READY).toBe(true);
 
-    // Build snowman
-    engine.go("east"); // outside
+    engine.go("east");
     engine.use("snowman");
     engine.use("carrot", "snowman");
     engine.use("coal", "snowman");

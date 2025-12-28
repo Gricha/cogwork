@@ -30,21 +30,13 @@ describe("Dungeon Escape Game", () => {
   });
 
   it("should complete the game", () => {
-    // Get the key
     engine.use("stone");
-    // Unlock the cell
     engine.use("key", "cell door");
-    // Go to corridor
     engine.go("north");
-    // Take the coin
     engine.take("coin");
-    // Distract the guard
     engine.use("coin");
-    // Go to exit
     engine.go("north");
-    // Open the exit
     engine.use("exit door");
-    // Escape
     const result = engine.use("outside");
 
     expect(result).toContain("escaped");
@@ -90,7 +82,6 @@ describe("Dungeon Escape Game", () => {
       engine.take("coin");
       engine.use("coin");
 
-      // Guard is distracted, should be able to go north
       const result = engine.go("north");
       expect(result).toContain("Dungeon Exit");
     });

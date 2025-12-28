@@ -3,7 +3,6 @@ import { ScalarSchema, DirectionSchema } from "./primitives";
 import { ConditionSchema } from "./conditions";
 import { EffectSchema } from "./effects";
 
-// Description fragment
 export const DescriptionFragmentSchema = z.object({
   say: z.string(),
   when: z.array(ConditionSchema).optional(),
@@ -12,17 +11,14 @@ export const DescriptionFragmentSchema = z.object({
   effects: z.array(EffectSchema).optional(),
 });
 
-// Descriptive text (complex conditional text)
 export const DescriptiveTextSchema = z.object({
   id: z.string(),
   fragments: z.array(DescriptionFragmentSchema),
   objectFragments: z.record(z.array(DescriptionFragmentSchema)).optional(),
 });
 
-// Either plain string or complex descriptive text
 export const TextOrDescriptiveSchema = z.union([z.string(), DescriptiveTextSchema]);
 
-// Trigger
 export const TriggerSchema = z.object({
   id: z.string().optional(),
   when: z.array(ConditionSchema),
@@ -30,7 +26,6 @@ export const TriggerSchema = z.object({
   message: TextOrDescriptiveSchema.optional(),
 });
 
-// UseAction
 export const UseActionSchema = z.object({
   targetId: z.string().optional(),
   number: z.number().optional(),
@@ -40,7 +35,6 @@ export const UseActionSchema = z.object({
   effects: z.array(EffectSchema).optional(),
 });
 
-// Item
 export const ItemSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -56,9 +50,8 @@ export const ItemSchema = z.object({
   useActions: z.array(UseActionSchema).optional(),
 });
 
-// DialogueLine
 export const DialogueLineSchema = z.object({
-  condition: z.string().optional(), // deprecated
+  condition: z.string().optional(),
   when: z.array(ConditionSchema).optional(),
   playerLine: z.string(),
   response: TextOrDescriptiveSchema,
@@ -67,7 +60,6 @@ export const DialogueLineSchema = z.object({
   effects: z.array(EffectSchema).optional(),
 });
 
-// NPC
 export const NPCSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -76,7 +68,6 @@ export const NPCSchema = z.object({
   aliases: z.array(z.string()).optional(),
 });
 
-// Exit
 export const ExitSchema = z.object({
   direction: DirectionSchema,
   targetRoomId: z.string(),
@@ -87,7 +78,6 @@ export const ExitSchema = z.object({
   blockedMessage: TextOrDescriptiveSchema.optional(),
 });
 
-// Room
 export const RoomSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -100,14 +90,12 @@ export const RoomSchema = z.object({
   triggers: z.array(TriggerSchema).optional(),
 });
 
-// Hint
 export const HintSchema = z.object({
   id: z.string(),
   text: TextOrDescriptiveSchema,
   when: z.array(ConditionSchema).optional(),
 });
 
-// Complete Game Definition
 export const GameDefinitionSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -125,7 +113,6 @@ export const GameDefinitionSchema = z.object({
   globalTriggers: z.array(TriggerSchema).optional(),
 });
 
-// Game State (for serialization validation)
 export const GameStateSchema = z.object({
   currentRoomId: z.string(),
   inventoryIds: z.array(z.string()),
