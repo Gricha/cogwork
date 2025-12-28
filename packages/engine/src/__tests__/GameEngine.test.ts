@@ -353,5 +353,387 @@ describe("Condition Combinators", () => {
       const status = engine.getStatus() as { flags: Record<string, number> };
       expect(status.flags["counter_value"]).toBe(3);
     });
+
+    it("should subtract from numeric value", () => {
+      engine.use("Counter");
+      engine.use("Counter");
+      engine.use("Subtractor");
+
+      const status = engine.getStatus() as { flags: Record<string, number> };
+      expect(status.flags["counter_value"]).toBe(1);
+    });
+  });
+});
+
+describe("Once auto-marking", () => {
+  it("should show fragment only on first visit via once condition", () => {
+    const engine = new GameEngine(sampleGame);
+    engine.startGame();
+
+    engine.take("key");
+    engine.use("key", "door");
+    const firstVisit = engine.go("north");
+    expect(firstVisit).toContain("Treasure Room");
+
+    engine.go("south");
+    const secondVisit = engine.go("north");
+    expect(secondVisit).toContain("Treasure Room");
+
+    const status = engine.getStatus() as { flags: Record<string, boolean> };
+    expect(status.flags["VISITED_TREASURE"]).toBe(true);
+  });
+});
+
+describe("Exit navigation", () => {
+  let engine: GameEngine;
+
+  beforeEach(() => {
+    engine = new GameEngine(sampleGame);
+    engine.startGame();
+    engine.take("key");
+    engine.use("key", "door");
+  });
+
+  it("should navigate via exit alias", () => {
+    const result = engine.go("north");
+    expect(result).toContain("Treasure Room");
+  });
+
+  it("should navigate via room name", () => {
+    const result = engine.go("Treasure Room");
+    expect(result).toContain("Treasure Room");
+  });
+
+  it("should navigate via room id", () => {
+    const result = engine.go("treasure");
+    expect(result).toContain("Treasure Room");
+  });
+
+  it("should be case-insensitive for room name", () => {
+    const result = engine.go("TREASURE ROOM");
+    expect(result).toContain("Treasure Room");
+  });
+});
+
+describe("Locked exits with requiredItem", () => {
+  it("should block exit when locked without required item", () => {
+    const game: typeof sampleGame = {
+      ...sampleGame,
+      rooms: [
+        {
+          ...sampleGame.rooms[0],
+          exits: [
+            {
+              targetRoomId: "treasure",
+              aliases: ["north"],
+              locked: true,
+              requiredItem: "key",
+              blockedMessage: "The door is locked and needs a key.",
+            },
+          ],
+        },
+        sampleGame.rooms[1],
+      ],
+    };
+
+    const engine = new GameEngine(game);
+    engine.startGame();
+
+    const result = engine.go("north");
+    expect(result).toContain("locked and needs a key");
+  });
+
+  it("should allow exit when player has required item", () => {
+    const game: typeof sampleGame = {
+      ...sampleGame,
+      rooms: [
+        {
+          ...sampleGame.rooms[0],
+          exits: [
+            {
+              targetRoomId: "treasure",
+              aliases: ["north"],
+              locked: true,
+              requiredItem: "key",
+              blockedMessage: "The door is locked and needs a key.",
+            },
+          ],
+        },
+        sampleGame.rooms[1],
+      ],
+    };
+
+    const engine = new GameEngine(game);
+    engine.startGame();
+    engine.take("key");
+
+    const result = engine.go("north");
+    expect(result).toContain("Treasure Room");
+  });
+});
+
+describe("Fragment groups", () => {
+  it("should only show one fragment per group", () => {
+    const engine = new GameEngine(sampleGame);
+    engine.startGame();
+
+    const result = engine.look();
+
+    const hasLocked = result.includes("heavy wooden door blocks");
+    const hasUnlocked = result.includes("door to the north is now unlocked");
+    expect(hasLocked !== hasUnlocked).toBe(true);
+  });
+
+  it("should switch group fragment based on conditions", () => {
+    const engine = new GameEngine(sampleGame);
+    engine.startGame();
+
+    const beforeUnlock = engine.look();
+    expect(beforeUnlock).toContain("heavy wooden door blocks");
+
+    engine.take("key");
+    engine.use("key", "door");
+
+    const afterUnlock = engine.look();
+    expect(afterUnlock).toContain("door to the north is now unlocked");
+    expect(afterUnlock).not.toContain("heavy wooden door blocks");
+  });
+});
+
+describe("Fragment priority", () => {
+  let engine: GameEngine;
+
+  beforeEach(() => {
+    engine = new GameEngine(priorityTestGame);
+    engine.startGame();
+  });
+
+  it("should only show highest priority fragment", () => {
+    const result = engine.look();
+    expect(result).toContain("High priority");
+    expect(result).not.toContain("Low priority");
+  });
+
+  it("should show lower priority when high priority condition fails", () => {
+    engine.use("Disabler");
+    const result = engine.look();
+    expect(result).toContain("Low priority");
+    expect(result).not.toContain("High priority");
+  });
+});
+
+describe("Item containers (location)", () => {
+  let engine: GameEngine;
+
+  beforeEach(() => {
+    engine = new GameEngine(containerTestGame);
+    engine.startGame();
+  });
+
+  it("should not show items inside containers in room description", () => {
+    const result = engine.look();
+    expect(result).toContain("box");
+    expect(result).not.toContain("hidden gem");
+  });
+
+  it("should allow examining items inside containers", () => {
+    const result = engine.look("gem");
+    expect(result).toContain("sparkling gem");
+  });
+
+  it("should allow taking items from containers", () => {
+    engine.take("gem");
+    const inv = engine.inventory();
+    expect(inv).toContain("hidden gem");
+  });
+});
+
+describe("NPC dialogue", () => {
+  let engine: GameEngine;
+
+  beforeEach(() => {
+    engine = new GameEngine(npcTestGame);
+    engine.startGame();
+  });
+
+  it("should show NPC in room", () => {
+    const result = engine.look();
+    expect(result).toContain("Present:");
+    expect(result).toContain("Old Wizard");
+  });
+
+  it("should describe NPC when looked at", () => {
+    const result = engine.look("wizard");
+    expect(result).toContain("wise old wizard");
+  });
+
+  it("should show dialogue options when talking", () => {
+    const result = engine.talk("wizard");
+    expect(result).toContain("What would you like to say?");
+    expect(result).toContain("Hello, wizard!");
+    expect(result).toContain("talk wizard");
+  });
+
+  it("should respond to dialogue selection", () => {
+    engine.talk("wizard");
+    const result = engine.talkOption("wizard", 1);
+    expect(result).toContain("Greetings, adventurer!");
+  });
+
+  it("should apply dialogue effects", () => {
+    engine.talk("wizard");
+    engine.talkOption("wizard", 2);
+
+    const status = engine.getStatus() as { flags: Record<string, boolean> };
+    expect(status.flags["WIZARD_KNOWLEDGE"]).toBe(true);
+  });
+
+  it("should hide dialogue options when conditions not met", () => {
+    const result = engine.talk("wizard");
+    expect(result).not.toContain("Secret option");
+  });
+
+  it("should show conditional dialogue after conditions met", () => {
+    engine.talk("wizard");
+    engine.talkOption("wizard", 2);
+
+    const result = engine.talk("wizard");
+    expect(result).toContain("Secret option");
+  });
+
+  it("should return error for invalid dialogue number", () => {
+    engine.talk("wizard");
+    const result = engine.talkOption("wizard", 99);
+    expect(result).toContain("Invalid dialogue option");
+  });
+
+  it("should return error when talking to nonexistent NPC", () => {
+    const result = engine.talk("dragon");
+    expect(result).toContain("no one called");
+  });
+
+  it("should handle NPC with no available dialogue", () => {
+    engine.talk("wizard");
+    engine.talkOption("wizard", 1);
+
+    engine.talk("wizard");
+    engine.talkOption("wizard", 1);
+
+    engine.talk("wizard");
+    engine.talkOption("wizard", 1);
+
+    const result = engine.talk("wizard");
+    expect(result).toContain("nothing more to say");
+  });
+});
+
+describe("Additional conditions", () => {
+  describe("lacks condition", () => {
+    it("should pass when player does not have item", () => {
+      const engine = new GameEngine(sampleGame);
+      engine.startGame();
+
+      const result = engine.hint();
+      expect(result).toContain("picking up the key");
+    });
+
+    it("should fail when player has item", () => {
+      const engine = new GameEngine(sampleGame);
+      engine.startGame();
+      engine.take("key");
+
+      const result = engine.hint();
+      expect(result).not.toContain("picking up the key");
+    });
+  });
+
+  describe("present/absent conditions", () => {
+    let engine: GameEngine;
+
+    beforeEach(() => {
+      engine = new GameEngine(containerTestGame);
+      engine.startGame();
+    });
+
+    it("present should pass when item is in room", () => {
+      const result = engine.look();
+      expect(result).toContain("The gem is here");
+    });
+
+    it("present should fail when item is taken", () => {
+      engine.take("gem");
+      const result = engine.look();
+      expect(result).not.toContain("The gem is here");
+    });
+
+    it("absent should pass when item is not in room", () => {
+      engine.take("gem");
+      const result = engine.look();
+      expect(result).toContain("The gem is gone");
+    });
+
+    it("absent should fail when item is still present", () => {
+      const result = engine.look();
+      expect(result).not.toContain("The gem is gone");
+    });
+  });
+
+  describe("is_at condition", () => {
+    it("should check if item is at location", () => {
+      const engine = new GameEngine(containerTestGame);
+      engine.startGame();
+
+      const result = engine.look();
+      expect(result).toContain("inside the box");
+    });
+  });
+});
+
+describe("Additional effects", () => {
+  let engine: GameEngine;
+
+  beforeEach(() => {
+    engine = new GameEngine(effectsTestGame);
+    engine.startGame();
+  });
+
+  describe("addItem effect", () => {
+    it("should add item to inventory", () => {
+      engine.use("Summoner");
+
+      const inv = engine.inventory();
+      expect(inv).toContain("magic wand");
+    });
+
+    it("should mark item as taken", () => {
+      engine.use("Summoner");
+
+      const result = engine.look();
+      expect(result).not.toContain("magic wand");
+    });
+  });
+
+  describe("removeItem effect", () => {
+    it("should remove item from inventory", () => {
+      engine.take("coin");
+      expect(engine.inventory()).toContain("gold coin");
+
+      engine.use("coin", "altar");
+      expect(engine.inventory()).not.toContain("gold coin");
+    });
+  });
+
+  describe("consume effect", () => {
+    it("should set path to false", () => {
+      engine.use("Power Source");
+
+      let status = engine.getStatus() as { flags: Record<string, boolean> };
+      expect(status.flags["HAS_POWER"]).toBe(true);
+
+      engine.use("Consumer");
+
+      status = engine.getStatus() as { flags: Record<string, boolean> };
+      expect(status.flags["HAS_POWER"]).toBe(false);
+    });
   });
 });

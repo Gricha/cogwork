@@ -248,6 +248,19 @@ export const conditionTestGame: GameDefinition = {
             },
           ],
         },
+        {
+          id: "subtractor",
+          name: "Subtractor",
+          description: "Decrements a counter.",
+          examineText: "A subtracting device.",
+          takeable: false,
+          useActions: [
+            {
+              response: "Counter decremented.",
+              effects: [{ subtract: ["counter_value", 1] }],
+            },
+          ],
+        },
       ],
       npcs: [],
       exits: [],
@@ -262,5 +275,258 @@ export const conditionTestGame: GameDefinition = {
 
   introText: "Condition test game started.",
   winMessage: "Test complete.",
+  hints: [],
+};
+
+export const npcTestGame: GameDefinition = {
+  id: "npc-test",
+  name: "NPC Test Game",
+  version: "1.0.0",
+
+  rooms: [
+    {
+      id: "tower",
+      name: "Wizard Tower",
+      description: "A tall tower filled with magical artifacts.",
+      items: [],
+      npcs: [
+        {
+          id: "wizard",
+          name: "Old Wizard",
+          description: "A wise old wizard with a long white beard.",
+          aliases: ["mage", "old man"],
+          dialogue: [
+            {
+              when: [{ once: "wizard.greeted" }],
+              playerLine: "Hello, wizard!",
+              response: "Greetings, adventurer! What brings you here?",
+            },
+            {
+              when: [{ once: "wizard.knowledge" }],
+              playerLine: "Tell me your secrets.",
+              response: "Very well. I shall share my knowledge with you.",
+              effects: [{ set: ["WIZARD_KNOWLEDGE", true] }],
+            },
+            {
+              when: [{ truthy: "WIZARD_KNOWLEDGE" }, { once: "wizard.secret" }],
+              playerLine: "Secret option only after knowledge",
+              response: "You have learned well.",
+            },
+          ],
+        },
+      ],
+      exits: [],
+    },
+  ],
+
+  startingRoom: "tower",
+  initialFlags: {},
+
+  introText: "Welcome to the wizard's tower.",
+  winMessage: "You have mastered the tower.",
+  hints: [],
+};
+
+export const containerTestGame: GameDefinition = {
+  id: "container-test",
+  name: "Container Test Game",
+  version: "1.0.0",
+
+  rooms: [
+    {
+      id: "storage",
+      name: "Storage Room",
+      description: {
+        id: "storage-desc",
+        fragments: [
+          {
+            say: "A dusty storage room.",
+          },
+          {
+            say: "The gem is here, inside the box.",
+            when: [{ present: "gem" }, { is_at: ["gem", "box"] }],
+          },
+          {
+            say: "The gem is gone from its hiding spot.",
+            when: [{ absent: "gem" }],
+          },
+        ],
+      },
+      items: [
+        {
+          id: "box",
+          name: "wooden box",
+          description: "An old wooden box.",
+          examineText: "The box is slightly open.",
+          takeable: false,
+          aliases: ["container"],
+        },
+        {
+          id: "gem",
+          name: "hidden gem",
+          description: "A sparkling gem hidden in the box.",
+          examineText: "A sparkling gem that catches the light.",
+          takeable: true,
+          location: "box",
+          aliases: ["jewel"],
+        },
+      ],
+      npcs: [],
+      exits: [],
+    },
+  ],
+
+  startingRoom: "storage",
+  initialFlags: {},
+
+  introText: "Find what's hidden.",
+  winMessage: "You found it!",
+  hints: [],
+};
+
+export const priorityTestGame: GameDefinition = {
+  id: "priority-test",
+  name: "Priority Test Game",
+  version: "1.0.0",
+
+  rooms: [
+    {
+      id: "hall",
+      name: "Great Hall",
+      description: {
+        id: "hall-desc",
+        fragments: [
+          {
+            say: "Low priority message.",
+            priority: 0,
+          },
+          {
+            say: "High priority message!",
+            when: [{ falsy: "DISABLED" }],
+            priority: 10,
+          },
+        ],
+      },
+      items: [
+        {
+          id: "disabler",
+          name: "Disabler",
+          description: "Disables high priority.",
+          examineText: "A toggle switch.",
+          takeable: false,
+          useActions: [
+            {
+              response: "High priority disabled.",
+              effects: [{ set: ["DISABLED", true] }],
+            },
+          ],
+        },
+      ],
+      npcs: [],
+      exits: [],
+    },
+  ],
+
+  startingRoom: "hall",
+  initialFlags: {
+    DISABLED: false,
+  },
+
+  introText: "Priority test.",
+  winMessage: "Done.",
+  hints: [],
+};
+
+export const effectsTestGame: GameDefinition = {
+  id: "effects-test",
+  name: "Effects Test Game",
+  version: "1.0.0",
+
+  rooms: [
+    {
+      id: "lab",
+      name: "Laboratory",
+      description: "A magical laboratory.",
+      items: [
+        {
+          id: "wand",
+          name: "magic wand",
+          description: "A powerful wand.",
+          examineText: "It hums with power.",
+          takeable: true,
+        },
+        {
+          id: "summoner",
+          name: "Summoner",
+          description: "Summons items.",
+          examineText: "A strange device.",
+          takeable: false,
+          useActions: [
+            {
+              response: "A magic wand appears in your hands!",
+              effects: [{ addItem: "wand" }],
+            },
+          ],
+        },
+        {
+          id: "coin",
+          name: "gold coin",
+          description: "A shiny coin.",
+          examineText: "Very valuable.",
+          takeable: true,
+        },
+        {
+          id: "altar",
+          name: "stone altar",
+          description: "An ancient altar.",
+          examineText: "It seems to want an offering.",
+          takeable: false,
+          useActions: [
+            {
+              targetId: "coin",
+              response: "You place the coin on the altar. It vanishes!",
+              effects: [{ removeItem: "coin" }],
+            },
+          ],
+        },
+        {
+          id: "power-source",
+          name: "Power Source",
+          description: "Provides power.",
+          examineText: "Glowing with energy.",
+          takeable: false,
+          useActions: [
+            {
+              response: "Power activated!",
+              effects: [{ set: ["HAS_POWER", true] }],
+            },
+          ],
+        },
+        {
+          id: "consumer",
+          name: "Consumer",
+          description: "Consumes power.",
+          examineText: "Needs power to work.",
+          takeable: false,
+          useActions: [
+            {
+              response: "Power consumed!",
+              effects: [{ consume: "HAS_POWER" }],
+            },
+          ],
+        },
+      ],
+      npcs: [],
+      exits: [],
+    },
+  ],
+
+  startingRoom: "lab",
+  initialFlags: {
+    HAS_POWER: false,
+  },
+
+  introText: "Test effects here.",
+  winMessage: "Effects tested.",
   hints: [],
 };

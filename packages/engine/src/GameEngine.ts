@@ -129,11 +129,17 @@ export class GameEngine {
     );
   }
 
-  private getAvailableDialogue(npc: NPC): NPC["dialogue"] {
-    return npc.dialogue.filter((line) => {
-      const { pass } = this.conditionsPass(line.when);
-      return pass;
-    });
+  private getAvailableDialogue(
+    npc: NPC,
+  ): Array<{ line: NPC["dialogue"][number]; onceMarks: string[] }> {
+    const result: Array<{ line: NPC["dialogue"][number]; onceMarks: string[] }> = [];
+    for (const line of npc.dialogue) {
+      const { pass, onceMarks } = this.conditionsPass(line.when);
+      if (pass) {
+        result.push({ line, onceMarks });
+      }
+    }
+    return result;
   }
 
   private incrementTurn(): void {
@@ -719,8 +725,8 @@ export class GameEngine {
 
     let response = `You approach ${npc.name}.\n\n`;
     response += "What would you like to say?\n\n";
-    availableDialogue.forEach((line, index) => {
-      response += `${index + 1}. "${line.playerLine}"\n`;
+    availableDialogue.forEach((entry, index) => {
+      response += `${index + 1}. "${entry.line.playerLine}"\n`;
     });
     response += `\n(Use: talk ${characterName.toLowerCase()} [number] to choose)`;
 
@@ -740,15 +746,17 @@ export class GameEngine {
 
     const availableDialogue = this.getAvailableDialogue(npc);
 
-    const option = availableDialogue[optionNum - 1];
-    if (!option) {
+    const entry = availableDialogue[optionNum - 1];
+    if (!entry) {
       return `Invalid dialogue option. Please choose a number from 1-${availableDialogue.length}.`;
     }
 
-    let response = `You: "${option.playerLine}"\n\n${this.renderText(option.response)}`;
+    entry.onceMarks.forEach((path) => this.markOnce(path));
 
-    if (option.effects) {
-      this.applyEffects(option.effects);
+    let response = `You: "${entry.line.playerLine}"\n\n${this.renderText(entry.line.response)}`;
+
+    if (entry.line.effects) {
+      this.applyEffects(entry.line.effects);
     }
 
     if (this.state.won) {
