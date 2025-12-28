@@ -1,6 +1,6 @@
 {
   "name": "cogwork",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A declarative puzzle adventure game engine with Zod validation",
   "keywords": [
     "escape-room",
