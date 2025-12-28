@@ -92,45 +92,8 @@ export class GameEngine {
       .filter((item): item is Item => item !== undefined);
   }
 
-  private findItemInRoom(name: string): Item | undefined {
-    const room = this.getCurrentRoom();
-    const roomItems = this.getAllRoomItems(room);
+  private searchItemsByName(items: Item[], name: string): Item | undefined {
     const lowerName = name.toLowerCase();
-    const exact = roomItems.find(
-      (item) =>
-        item.name.toLowerCase() === lowerName ||
-        item.aliases?.some((alias) => alias.toLowerCase() === lowerName),
-    );
-    if (exact) return exact;
-
-    return roomItems.find(
-      (item) =>
-        item.name.toLowerCase().includes(lowerName) ||
-        item.aliases?.some((alias) => alias.toLowerCase().includes(lowerName)),
-    );
-  }
-
-  private findVisibleItemInRoom(name: string): Item | undefined {
-    const room = this.getCurrentRoom();
-    const roomItems = this.getRoomItems(room);
-    const lowerName = name.toLowerCase();
-    const exact = roomItems.find(
-      (item) =>
-        item.name.toLowerCase() === lowerName ||
-        item.aliases?.some((alias) => alias.toLowerCase() === lowerName),
-    );
-    if (exact) return exact;
-
-    return roomItems.find(
-      (item) =>
-        item.name.toLowerCase().includes(lowerName) ||
-        item.aliases?.some((alias) => alias.toLowerCase().includes(lowerName)),
-    );
-  }
-
-  private findItemInInventory(name: string): Item | undefined {
-    const lowerName = name.toLowerCase();
-    const items = this.getInventoryItems();
     const exact = items.find(
       (item) =>
         item.name.toLowerCase() === lowerName ||
@@ -145,6 +108,18 @@ export class GameEngine {
     );
   }
 
+  private findItemInRoom(name: string): Item | undefined {
+    return this.searchItemsByName(this.getAllRoomItems(this.getCurrentRoom()), name);
+  }
+
+  private findVisibleItemInRoom(name: string): Item | undefined {
+    return this.searchItemsByName(this.getRoomItems(this.getCurrentRoom()), name);
+  }
+
+  private findItemInInventory(name: string): Item | undefined {
+    return this.searchItemsByName(this.getInventoryItems(), name);
+  }
+
   private findNPC(name: string): NPC | undefined {
     const room = this.getCurrentRoom();
     const lowerName = name.toLowerCase();
@@ -153,6 +128,14 @@ export class GameEngine {
         npc.name.toLowerCase().includes(lowerName) ||
         npc.aliases?.some((alias) => alias.toLowerCase().includes(lowerName)),
     );
+  }
+
+  private getAvailableDialogue(npc: NPC): NPC["dialogue"] {
+    return npc.dialogue.filter((line) => {
+      if (line.condition && !this.getFlag(line.condition)) return false;
+      const { pass } = this.conditionsPass(line.when);
+      return pass;
+    });
   }
 
   private incrementTurn(): void {
@@ -375,48 +358,52 @@ export class GameEngine {
     return { pass: true, onceMarks };
   }
 
+  private applyEffect(effect: Effect): void {
+    if ("set" in effect) {
+      const [path, value] = effect.set;
+      this.setPathValue(path, value);
+    }
+
+    if ("consume" in effect) {
+      this.setPathValue(effect.consume, false);
+    }
+
+    if ("markOnce" in effect) {
+      this.markOnce(effect.markOnce);
+    }
+
+    if ("addItem" in effect) {
+      const itemId = effect.addItem;
+      if (!this.state.inventoryIds.includes(itemId)) {
+        this.state.inventoryIds.push(itemId);
+      }
+      if (!this.state.takenItemIds.includes(itemId)) {
+        this.state.takenItemIds.push(itemId);
+      }
+    }
+
+    if ("removeItem" in effect) {
+      this.removeInventoryItem(effect.removeItem);
+    }
+
+    if ("add" in effect) {
+      const [path, amount] = effect.add;
+      const current = Number(this.getPathValue(path)) || 0;
+      this.setPathValue(path, current + amount);
+    }
+
+    if ("subtract" in effect) {
+      const [path, amount] = effect.subtract;
+      const current = Number(this.getPathValue(path)) || 0;
+      this.setPathValue(path, current - amount);
+    }
+  }
+
   private applyEffects(effects?: Effect[]): void {
     if (!effects) return;
 
     for (const effect of effects) {
-      if ("set" in effect) {
-        const [path, value] = effect.set;
-        this.setPathValue(path, value);
-      }
-
-      if ("consume" in effect) {
-        this.setPathValue(effect.consume, false);
-      }
-
-      if ("markOnce" in effect) {
-        this.markOnce(effect.markOnce);
-      }
-
-      if ("addItem" in effect) {
-        const itemId = effect.addItem;
-        if (!this.state.inventoryIds.includes(itemId)) {
-          this.state.inventoryIds.push(itemId);
-        }
-        if (!this.state.takenItemIds.includes(itemId)) {
-          this.state.takenItemIds.push(itemId);
-        }
-      }
-
-      if ("removeItem" in effect) {
-        this.removeInventoryItem(effect.removeItem);
-      }
-
-      if ("add" in effect) {
-        const [path, amount] = effect.add;
-        const current = Number(this.getPathValue(path)) || 0;
-        this.setPathValue(path, current + amount);
-      }
-
-      if ("subtract" in effect) {
-        const [path, amount] = effect.subtract;
-        const current = Number(this.getPathValue(path)) || 0;
-        this.setPathValue(path, current - amount);
-      }
+      this.applyEffect(effect);
     }
 
     this.processGlobalTriggers();
@@ -435,38 +422,7 @@ export class GameEngine {
 
       if (trigger.effects) {
         for (const effect of trigger.effects) {
-          if ("set" in effect) {
-            const [path, value] = effect.set;
-            this.setPathValue(path, value);
-          }
-          if ("consume" in effect) {
-            this.setPathValue(effect.consume, false);
-          }
-          if ("markOnce" in effect) {
-            this.markOnce(effect.markOnce);
-          }
-          if ("addItem" in effect) {
-            const itemId = effect.addItem;
-            if (!this.state.inventoryIds.includes(itemId)) {
-              this.state.inventoryIds.push(itemId);
-            }
-            if (!this.state.takenItemIds.includes(itemId)) {
-              this.state.takenItemIds.push(itemId);
-            }
-          }
-          if ("removeItem" in effect) {
-            this.removeInventoryItem(effect.removeItem);
-          }
-          if ("add" in effect) {
-            const [path, amount] = effect.add;
-            const current = Number(this.getPathValue(path)) || 0;
-            this.setPathValue(path, current + amount);
-          }
-          if ("subtract" in effect) {
-            const [path, amount] = effect.subtract;
-            const current = Number(this.getPathValue(path)) || 0;
-            this.setPathValue(path, current - amount);
-          }
+          this.applyEffect(effect);
         }
       }
     }
@@ -770,11 +726,7 @@ export class GameEngine {
       return `There's no one called "${characterName}" here to talk to.`;
     }
 
-    const availableDialogue = npc.dialogue.filter((line) => {
-      if (line.condition && !this.getFlag(line.condition)) return false;
-      const { pass } = this.conditionsPass(line.when);
-      return pass;
-    });
+    const availableDialogue = this.getAvailableDialogue(npc);
 
     if (availableDialogue.length === 0) {
       return `${npc.name} has nothing more to say.`;
@@ -801,11 +753,7 @@ export class GameEngine {
       return `There's no one called "${characterName}" here to talk to.`;
     }
 
-    const availableDialogue = npc.dialogue.filter((line) => {
-      if (line.condition && !this.getFlag(line.condition)) return false;
-      const { pass } = this.conditionsPass(line.when);
-      return pass;
-    });
+    const availableDialogue = this.getAvailableDialogue(npc);
 
     const option = availableDialogue[optionNum - 1];
     if (!option) {
