@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "A declarative puzzle adventure game engine with Zod validation",
   "keywords": [
+    "escape-room",
     "game-engine",
     "interactive-fiction",
-    "text-adventure",
     "puzzle",
-    "escape-room",
+    "text-adventure",
     "typescript",
     "zod"
   ],

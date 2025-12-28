@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A pnpm monorepo containing `text-game-engine`, a declarative engine for text adventure games. Games are defined as data (GameDefinition) rather than code.
+A pnpm monorepo containing `cogwork`, a declarative engine for puzzle adventure games. Games are defined as data (GameDefinition) rather than code.
 
 ## Structure
 

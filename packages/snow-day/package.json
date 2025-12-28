@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Snow Day - A puzzle adventure game built with cogwork",
   "keywords": [
+    "cogwork",
     "game",
     "snow-day",
-    "text-adventure",
-    "cogwork"
+    "text-adventure"
   ],
   "license": "MIT",
   "type": "module",

@@ -38,7 +38,7 @@ importers:
 
   packages/example:
     dependencies:
-      text-game-engine:
+      cogwork:
         specifier: workspace:*
         version: link:../engine
     devDependencies:
@@ -60,7 +60,7 @@ importers:
 
   packages/snow-day:
     dependencies:
-      text-game-engine:
+      cogwork:
         specifier: workspace:*
         version: link:../engine
     devDependencies:
