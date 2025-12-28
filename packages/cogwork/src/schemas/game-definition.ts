@@ -13,7 +13,7 @@ export const DescriptionFragmentSchema = z.object({
 export const DescriptiveTextSchema = z.object({
   id: z.string(),
   fragments: z.array(DescriptionFragmentSchema),
-  objectFragments: z.record(z.array(DescriptionFragmentSchema)).optional(),
+  objectFragments: z.record(z.string(), z.array(DescriptionFragmentSchema)).optional(),
 });
 
 export const TextOrDescriptiveSchema = z.union([z.string(), DescriptiveTextSchema]);
@@ -100,7 +100,7 @@ const GameDefinitionBaseSchema = z.object({
 
   rooms: z.array(RoomSchema).min(1),
   startingRoom: z.string(),
-  initialFlags: z.record(ScalarSchema),
+  initialFlags: z.record(z.string(), ScalarSchema),
 
   introText: TextOrDescriptiveSchema,
   winMessage: TextOrDescriptiveSchema,
@@ -117,33 +117,29 @@ export const GameDefinitionSchema = GameDefinitionBaseSchema.superRefine((data, 
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: `startingRoom "${data.startingRoom}" does not exist`,
-      path: ["startingRoom"],
     });
   }
 
-  for (const [roomIdx, room] of data.rooms.entries()) {
-    for (const [exitIdx, exit] of room.exits.entries()) {
+  for (const room of data.rooms) {
+    for (const exit of room.exits) {
       if (!roomIds.has(exit.targetRoomId)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `exit targetRoomId "${exit.targetRoomId}" does not exist`,
-          path: ["rooms", roomIdx, "exits", exitIdx, "targetRoomId"],
+          message: `exit targetRoomId "${exit.targetRoomId}" does not exist in room "${room.id}"`,
         });
       }
       if (exit.requiredItem && !allItemIds.has(exit.requiredItem)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `exit requiredItem "${exit.requiredItem}" does not exist`,
-          path: ["rooms", roomIdx, "exits", exitIdx, "requiredItem"],
+          message: `exit requiredItem "${exit.requiredItem}" does not exist in room "${room.id}"`,
         });
       }
     }
-    for (const [itemIdx, item] of room.items.entries()) {
+    for (const item of room.items) {
       if (item.location && !roomIds.has(item.location) && !allItemIds.has(item.location)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `item location "${item.location}" does not exist`,
-          path: ["rooms", roomIdx, "items", itemIdx, "location"],
+          message: `item location "${item.location}" does not exist for item "${item.id}" in room "${room.id}"`,
         });
       }
     }
@@ -154,7 +150,7 @@ export const GameStateSchema = z.object({
   currentRoomId: z.string(),
   inventoryIds: z.array(z.string()),
   takenItemIds: z.array(z.string()),
-  flags: z.record(ScalarSchema),
+  flags: z.record(z.string(), ScalarSchema),
   visitedRooms: z.array(z.string()),
   gameOver: z.boolean(),
   won: z.boolean(),
