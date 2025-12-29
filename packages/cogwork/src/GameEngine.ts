@@ -843,7 +843,15 @@ export class GameEngine {
     return `You are carrying:\n${items.map((item) => `- ${item.name}`).join("\n")}`;
   }
 
-  getStatus(): object {
+  getStatus(): {
+    room: string;
+    roomId: string;
+    inventory: string[];
+    turns: number;
+    gameOver: boolean;
+    won: boolean;
+    flags: Record<string, Scalar>;
+  } {
     return {
       room: this.getCurrentRoom().name,
       roomId: this.state.currentRoomId,
