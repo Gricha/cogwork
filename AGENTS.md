@@ -28,6 +28,7 @@ pnpm format            # Auto-format code
 1. **Declarative over imperative** - Game logic lives in GameDefinition objects, not code
 2. **Validate early** - Zod schemas catch errors at startup, not runtime
 3. **Keep it simple** - Minimal dependencies, no over-engineering
+4. **Prefer clarity over cleverness** - Extract complex conditionals into named predicates, favor readable code over terse code
 
 ## Testing
 
@@ -53,3 +54,7 @@ Before marking a task complete, ensure both pass:
 - ESM modules (`"type": "module"`)
 - Strict TypeScript
 - **No inline comments** - Code should be self-documenting. Remove any `//` comments you encounter.
+
+## Project Todos
+
+See `TODO.md` for tracked future improvements and known issues.

@@ -490,31 +490,30 @@ export class GameEngine {
     return null;
   }
 
+  private matchesTarget(action: UseAction, target: Item | undefined): boolean {
+    if (action.targetId) return target?.id === action.targetId;
+    return target === undefined;
+  }
+
+  private matchesNumber(action: UseAction, number: number | undefined): boolean {
+    if (number !== undefined) {
+      return action.number === number || (action.number === undefined && !!action.numberAny);
+    }
+    return action.number === undefined && !action.numberAny;
+  }
+
   private findUseAction(
     item: Item,
     target: Item | undefined,
     number?: number,
   ): { action: UseAction; onceMarks: string[] } | null {
-    const actions = item.useActions || [];
-    for (const action of actions) {
-      if (action.targetId) {
-        if (!target || target.id !== action.targetId) continue;
-      } else if (target) {
-        continue;
-      }
-
-      if (number !== undefined) {
-        if (action.number !== undefined && action.number !== number) continue;
-        if (action.number === undefined && !action.numberAny) continue;
-      } else if (action.number !== undefined || action.numberAny) {
-        continue;
-      }
-
+    for (const action of item.useActions || []) {
+      if (!this.matchesTarget(action, target)) continue;
+      if (!this.matchesNumber(action, number)) continue;
       const { pass, onceMarks } = this.conditionsPass(action.requires);
       if (!pass) continue;
       return { action, onceMarks };
     }
-
     return null;
   }
 
