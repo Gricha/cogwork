@@ -11,7 +11,6 @@ export const sampleGame: GameDefinition = {
       id: "start",
       name: "Starting Room",
       description: {
-        id: "start-desc",
         fragments: [
           {
             say: "You are in a small room with stone walls.",
@@ -57,7 +56,6 @@ export const sampleGame: GameDefinition = {
           name: "wooden door",
           description: "A heavy wooden door.",
           examineText: {
-            id: "door-examine",
             fragments: [
               {
                 say: "The door is locked. There is a keyhole.",
@@ -167,7 +165,6 @@ export const conditionTestGame: GameDefinition = {
       id: "test-room",
       name: "Test Room",
       description: {
-        id: "test-desc",
         fragments: [
           {
             say: "You have either item A or item B.",
@@ -337,7 +334,6 @@ export const containerTestGame: GameDefinition = {
       id: "storage",
       name: "Storage Room",
       description: {
-        id: "storage-desc",
         fragments: [
           {
             say: "A dusty storage room.",
@@ -394,7 +390,6 @@ export const priorityTestGame: GameDefinition = {
       id: "hall",
       name: "Great Hall",
       description: {
-        id: "hall-desc",
         fragments: [
           {
             say: "Low priority message.",

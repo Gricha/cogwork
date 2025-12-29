@@ -100,7 +100,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       id: "bedroom",
       name: "Bedroom",
       description: {
-        id: "bedroom-description",
         fragments: [
           {
             say: "Entering the room, you are struck by that specific, heavy silence of a cold school morning. The air feels thin and reluctant, as if the house itself hasn't quite decided to wake up yet, leave the comfort of dreams, and face the bracing chill waiting beyond the frosted window.",
@@ -133,7 +132,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "window",
           description: "The window is thick with frost.",
           examineText: {
-            id: "bedroom-window-examine",
             fragments: [
               {
                 say: "The glass is OPAQUE with frost. You could probably scrape it clear.",
@@ -298,7 +296,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "left drawer",
           description: "The left drawer of the desk.",
           examineText: {
-            id: "left-drawer-examine",
             fragments: [
               {
                 say: "You pull open the left drawer. It's filled with a tangle of dried-out pens, a half-empty box of paperclips, and a stack of old report cards from elementary school. Nothing useful for your current adventure.",
@@ -310,7 +307,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           useActions: [
             {
               response: {
-                id: "left-drawer-use",
                 fragments: [
                   {
                     say: "You pull open the left drawer. It's filled with a tangle of dried-out pens, a half-empty box of paperclips, and a stack of old report cards from elementary school. Nothing useful for your current adventure.",
@@ -325,7 +321,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "right drawer",
           description: "The right drawer of the desk.",
           examineText: {
-            id: "right-drawer-examine",
             fragments: [
               {
                 say: "The right drawer slides open with a heavy wooden groan. Shoving aside a thick calculator and some loose-leaf paper, you spot something familiar.",
@@ -341,7 +336,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           useActions: [
             {
               response: {
-                id: "right-drawer-use",
                 fragments: [
                   {
                     say: "The right drawer slides open with a heavy wooden groan. Shoving aside a thick calculator and some loose-leaf paper, you spot something familiar.",
@@ -360,7 +354,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "corkboard",
           description: "A corkboard pinned with various notes and drawings.",
           examineText: {
-            id: "corkboard-examine",
             fragments: [
               {
                 say: "The corkboard is a messy repository of your life. Among the old movie tickets and schedule reminders, a specific crayon drawing catches your eye.",
@@ -423,7 +416,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       id: "entry",
       name: "Mudroom",
       description: {
-        id: "entry-description",
         fragments: [
           {
             say: "The mudroom is a narrow buffer between the warm house and the cold outside. A runner carpet dampens your footsteps, and the air here is slightly cooler, carrying the clean scent of the snow waiting beyond the door.",
@@ -591,7 +583,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
             { truthy: "flags.BREAKFAST_EATEN" },
           ],
           blockedMessage: {
-            id: "mudroom-outside-blocked",
             fragments: [
               {
                 say: "The cold beyond the door feels like a promise you aren't quite ready to keep. You should eat breakfast first.",
@@ -622,7 +613,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       id: "living-room",
       name: "Living Room",
       description: {
-        id: "living-room-description",
         fragments: [
           {
             say: "The living room is the warm heart of the home. Thick, cream-colored carpeting swallows the sound of your movements, and a large bay window looks out toward the front yard.",
@@ -661,7 +651,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "TV",
           description: "A large television sits against the wall.",
           examineText: {
-            id: "tv-examine",
             fragments: [
               {
                 say: "It is currently off. You might need the remote and working batteries to turn it on.",
@@ -728,7 +717,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           name: "TV remote",
           description: "The TV remote is on the coffee table.",
           examineText: {
-            id: "remote-examine",
             fragments: [
               {
                 say: "It seems to be DEAD. It needs fresh batteries.",
@@ -871,7 +859,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       id: "kitchen",
       name: "Kitchen",
       description: {
-        id: "kitchen-description",
         fragments: [
           {
             say: "The kitchen is bright and bustling with the warmth of a morning in progress. The air is heavy with the irresistible scent of fresh pancakes and the sharp sweetness of maple syrup.",
@@ -973,7 +960,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
               when: [{ truthy: "flags.SCHOOL_CLOSED" }, { falsy: "flags.GEAR_READY" }],
               playerLine: "What am I missing?",
               response: {
-                id: "parent-gear-missing",
                 fragments: [
                   {
                     say: "Beanie, mittens, coat, and scarf. Make sure everything is on and warm.",
@@ -1018,7 +1004,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
       id: "outside",
       name: "Outside",
       description: {
-        id: "outside-description",
         fragments: [
           {
             say: "The world has been utterly transformed. A thick, heavy blanket of fresh snow has covered everything, rounding off the edges of the world and swallowing all sound in a profound, peaceful silence.",
@@ -1063,7 +1048,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
           id: "snowman",
           name: "snowman",
           description: {
-            id: "snowman-description",
             fragments: [
               {
                 say: "A clear patch of snow waits for you to shape the first base.",
@@ -1101,7 +1085,6 @@ Thank you for playing our game. You can go back to https://gricha.dev/happyholid
             ],
           },
           examineText: {
-            id: "snowman-examine",
             fragments: [
               {
                 say: "It is only a base for now, waiting for a face and a hat.",

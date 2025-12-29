@@ -11,7 +11,6 @@ export const dungeonEscape: GameDefinition = {
       id: "cell",
       name: "Prison Cell",
       description: {
-        id: "cell-desc",
         fragments: [
           {
             say: "You wake up in a cold, damp prison cell. Stone walls surround you on three sides. Iron bars block the way out.",
@@ -38,7 +37,6 @@ export const dungeonEscape: GameDefinition = {
           name: "loose stone",
           description: "One of the stones in the wall looks loose.",
           examineText: {
-            id: "stone-examine",
             fragments: [
               {
                 say: "The stone can be pulled out. Behind it, you see a rusty key!",
@@ -78,7 +76,6 @@ export const dungeonEscape: GameDefinition = {
           name: "cell door",
           description: "Heavy iron bars.",
           examineText: {
-            id: "cell-door-examine",
             fragments: [
               {
                 say: "The iron bars are cold to the touch. There is a keyhole in the lock.",
@@ -117,7 +114,6 @@ export const dungeonEscape: GameDefinition = {
       id: "corridor",
       name: "Dungeon Corridor",
       description: {
-        id: "corridor-desc",
         fragments: [
           {
             say: "A long stone corridor stretches before you. Torches flicker on the walls, casting dancing shadows.",
@@ -189,7 +185,6 @@ export const dungeonEscape: GameDefinition = {
       id: "exit",
       name: "Dungeon Exit",
       description: {
-        id: "exit-desc",
         fragments: [
           {
             say: "You see a heavy wooden door ahead. Moonlight seeps through the cracks - freedom is just beyond!",
@@ -212,7 +207,6 @@ export const dungeonEscape: GameDefinition = {
           name: "exit door",
           description: "A heavy wooden door.",
           examineText: {
-            id: "exit-examine",
             fragments: [
               {
                 say: "The door is barred with a simple wooden latch. You can easily open it from this side.",

@@ -366,7 +366,6 @@ describe("Zod Schemas", () => {
         id: "room1",
         name: "Room One",
         description: {
-          id: "room1-desc",
           fragments: [{ say: "A complex room." }],
         },
         items: [],

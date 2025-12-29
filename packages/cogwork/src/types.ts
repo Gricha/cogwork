@@ -43,7 +43,6 @@ export interface DescriptionFragment {
 }
 
 export interface DescriptiveText {
-  id: string;
   fragments: DescriptionFragment[];
   objectFragments?: Record<string, DescriptionFragment[]>;
 }

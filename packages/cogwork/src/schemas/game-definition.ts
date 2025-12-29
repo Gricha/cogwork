@@ -11,7 +11,6 @@ export const DescriptionFragmentSchema = z.object({
 });
 
 export const DescriptiveTextSchema = z.object({
-  id: z.string(),
   fragments: z.array(DescriptionFragmentSchema),
   objectFragments: z.record(z.string(), z.array(DescriptionFragmentSchema)).optional(),
 });
