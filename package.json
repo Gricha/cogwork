@@ -4,8 +4,8 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
+    "lint": "oxlint -c oxlint.json packages",
+    "lint:fix": "oxlint -c oxlint.json --fix packages",
     "format": "oxfmt --write packages",
     "format:check": "oxfmt packages",
     "dev": "pnpm -r --parallel dev",
