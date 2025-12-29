@@ -110,8 +110,32 @@ const GameDefinitionBaseSchema = z.object({
 });
 
 export const GameDefinitionSchema = GameDefinitionBaseSchema.superRefine((data, ctx) => {
-  const roomIds = new Set(data.rooms.map((r) => r.id));
-  const allItemIds = new Set(data.rooms.flatMap((r) => r.items.map((i) => i.id)));
+  const seenRoomIds = new Set<string>();
+  for (const room of data.rooms) {
+    if (seenRoomIds.has(room.id)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `duplicate room id "${room.id}"`,
+      });
+    }
+    seenRoomIds.add(room.id);
+  }
+
+  const seenItemIds = new Set<string>();
+  for (const room of data.rooms) {
+    for (const item of room.items) {
+      if (seenItemIds.has(item.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `duplicate item id "${item.id}" in room "${room.id}"`,
+        });
+      }
+      seenItemIds.add(item.id);
+    }
+  }
+
+  const roomIds = seenRoomIds;
+  const allItemIds = seenItemIds;
 
   if (!roomIds.has(data.startingRoom)) {
     ctx.addIssue({
@@ -150,6 +174,7 @@ export const GameStateSchema = z.object({
   currentRoomId: z.string(),
   inventoryIds: z.array(z.string()),
   takenItemIds: z.array(z.string()),
+  revealedItemIds: z.array(z.string()),
   flags: z.record(z.string(), ScalarSchema),
   visitedRooms: z.array(z.string()),
   gameOver: z.boolean(),

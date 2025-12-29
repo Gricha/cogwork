@@ -541,7 +541,8 @@ describe("Item containers (location)", () => {
     expect(result).toContain("sparkling gem");
   });
 
-  it("should allow taking items from containers", () => {
+  it("should allow taking items from containers after examining", () => {
+    engine.examine("box");
     engine.take("gem");
     const inv = engine.inventory();
     expect(inv).toContain("hidden gem");
@@ -661,12 +662,14 @@ describe("Additional conditions", () => {
     });
 
     it("present should fail when item is taken", () => {
+      engine.examine("box");
       engine.take("gem");
       const result = engine.look();
       expect(result).not.toContain("The gem is here");
     });
 
     it("absent should pass when item is not in room", () => {
+      engine.examine("box");
       engine.take("gem");
       const result = engine.look();
       expect(result).toContain("The gem is gone");

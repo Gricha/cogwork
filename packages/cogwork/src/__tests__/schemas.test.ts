@@ -160,6 +160,80 @@ describe("Zod Schemas", () => {
       });
       expect(result.success).toBe(true);
     });
+
+    it("should reject duplicate room ids", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [],
+            npcs: [],
+            exits: [],
+          },
+          {
+            id: "room1",
+            name: "Room One Again",
+            description: "Same id.",
+            items: [],
+            npcs: [],
+            exits: [],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("duplicate room id");
+      }
+    });
+
+    it("should reject duplicate item ids across rooms", () => {
+      const result = GameDefinitionSchema.safeParse({
+        ...sampleGame,
+        rooms: [
+          {
+            id: "room1",
+            name: "Room One",
+            description: "A room.",
+            items: [
+              {
+                id: "key",
+                name: "key",
+                description: "A key.",
+                examineText: "A brass key.",
+                takeable: true,
+              },
+            ],
+            npcs: [],
+            exits: [{ targetRoomId: "room2" }],
+          },
+          {
+            id: "room2",
+            name: "Room Two",
+            description: "Another room.",
+            items: [
+              {
+                id: "key",
+                name: "another key",
+                description: "Same id.",
+                examineText: "Another key.",
+                takeable: true,
+              },
+            ],
+            npcs: [],
+            exits: [],
+          },
+        ],
+        startingRoom: "room1",
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain("duplicate item id");
+      }
+    });
   });
 
   describe("ConditionSchema", () => {

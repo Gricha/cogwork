@@ -16,6 +16,7 @@ describe("Snow Day Walkthrough", () => {
     engine.go("north");
     engine.use("window");
 
+    engine.examine("right drawer");
     engine.take("Z-Boy");
 
     engine.go("south");
@@ -35,6 +36,7 @@ describe("Snow Day Walkthrough", () => {
 
     engine.go("north");
     engine.use("window");
+    engine.examine("right drawer");
     engine.take("Z-Boy");
     engine.go("south");
     engine.take("remote");
@@ -99,6 +101,7 @@ describe("Snow Day Walkthrough", () => {
     engine.startGame();
     engine.go("north");
     engine.use("window");
+    engine.examine("right drawer");
     engine.take("Z-Boy");
 
     const serialized = engine.serialize();

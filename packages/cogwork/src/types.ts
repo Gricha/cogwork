@@ -142,6 +142,7 @@ export interface GameState {
   currentRoomId: string;
   inventoryIds: string[];
   takenItemIds: string[];
+  revealedItemIds: string[];
   flags: Record<string, Scalar>;
   visitedRooms: string[];
   gameOver: boolean;

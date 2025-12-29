@@ -48,6 +48,7 @@ export class GameEngine {
       currentRoomId: this.definition.startingRoom,
       inventoryIds: [],
       takenItemIds: [],
+      revealedItemIds: [],
       flags: { ...this.definition.initialFlags },
       visitedRooms: [],
       gameOver: false,
@@ -69,12 +70,23 @@ export class GameEngine {
 
   private getRoomItems(room: Room): Item[] {
     return room.items.filter(
-      (item) => !this.state.takenItemIds.includes(item.id) && !item.location,
+      (item) =>
+        !this.state.takenItemIds.includes(item.id) &&
+        (!item.location || this.state.revealedItemIds.includes(item.id)),
     );
   }
 
   private getAllRoomItems(room: Room): Item[] {
     return room.items.filter((item) => !this.state.takenItemIds.includes(item.id));
+  }
+
+  private revealContainerContents(containerId: string): void {
+    const room = this.getCurrentRoom();
+    for (const item of room.items) {
+      if (item.location === containerId && !this.state.revealedItemIds.includes(item.id)) {
+        this.state.revealedItemIds.push(item.id);
+      }
+    }
   }
 
   private getItemById(itemId: string): Item | undefined {
@@ -653,7 +665,7 @@ export class GameEngine {
     if (this.state.gameOver) {
       return this.renderText(this.definition.winMessage);
     }
-    const item = this.findItemInRoom(itemName);
+    const item = this.findVisibleItemInRoom(itemName);
 
     if (!item) {
       return `You don't see any "${itemName}" here to take.`;
@@ -694,6 +706,7 @@ export class GameEngine {
     const item = this.findItemInRoom(target) || this.findItemInInventory(target);
 
     if (item) {
+      this.revealContainerContents(item.id);
       return `** ${item.name} **\n\n${this.renderText(item.examineText)}`;
     }
 
@@ -887,6 +900,7 @@ export class GameEngine {
       currentRoomId: parsed.currentRoomId ?? definition.startingRoom,
       inventoryIds: parsed.inventoryIds || [],
       takenItemIds: parsed.takenItemIds || [],
+      revealedItemIds: parsed.revealedItemIds || [],
       flags: { ...definition.initialFlags, ...parsed.flags },
       visitedRooms: parsed.visitedRooms || [],
       gameOver: parsed.gameOver || false,

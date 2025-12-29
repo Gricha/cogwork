@@ -81,6 +81,7 @@ describe("GameEngine - Core Loop", () => {
       const afterWindow = engine.hint();
       expect(afterWindow).toContain("handheld");
 
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.use("Z-Boy");
       const afterBatteries = engine.hint();
@@ -200,7 +201,15 @@ describe("GameEngine - Core Loop", () => {
       expect(result).toContain("Z-Boy");
     });
 
+    it("should not allow taking hidden items directly", () => {
+      const result = engine.take("Z-Boy");
+
+      expect(result).toContain("don't see");
+      expect(engine.getStatus().inventory).not.toContain("Z-Boy");
+    });
+
     it("should hide drawer contents after taking item", () => {
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       const result = engine.examine("right drawer");
 
@@ -277,6 +286,7 @@ describe("GameEngine - Core Loop", () => {
       reachLivingRoom();
       engine.take("remote");
       engine.go("north");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
 
       const extractResult = engine.use("Z-Boy");
@@ -297,6 +307,7 @@ describe("GameEngine - Core Loop", () => {
       reachLivingRoom();
       engine.take("remote");
       engine.go("north");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.use("Z-Boy");
       engine.use("batteries", "remote");
@@ -310,6 +321,7 @@ describe("GameEngine - Core Loop", () => {
       reachLivingRoom();
       engine.take("remote");
       engine.go("north");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.use("Z-Boy");
       engine.use("remote", "batteries");
@@ -322,6 +334,7 @@ describe("GameEngine - Core Loop", () => {
       reachLivingRoom();
       engine.take("remote");
       engine.go("north");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
 
       const powerResult = engine.use("Z-Boy", "remote");
@@ -343,6 +356,7 @@ describe("GameEngine - Core Loop", () => {
       reachLivingRoom();
       engine.take("remote");
       engine.go("north");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.use("Z-Boy");
       engine.use("batteries", "remote");
@@ -369,6 +383,7 @@ describe("GameEngine - Core Loop", () => {
     it("should require breakfast before going outside", () => {
       engine.go("north");
       engine.use("window");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.go("south");
       engine.take("remote");
@@ -432,6 +447,7 @@ describe("GameEngine - Core Loop", () => {
     it("should require gear before going outside", () => {
       engine.go("north");
       engine.use("window");
+      engine.examine("right drawer");
       engine.take("Z-Boy");
       engine.go("south");
       engine.take("remote");
