@@ -1,6 +1,6 @@
 {
   "name": "cogwork-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server wrapper for cogwork game engine",
   "keywords": [
     "cogwork",
